@@ -1,0 +1,7 @@
+---
+string qos_profile
+int32 sensing_rate
+int32 image_width
+int32 image_height
+string file_note
+int32 packet_size
