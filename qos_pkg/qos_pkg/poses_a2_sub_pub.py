@@ -1,7 +1,7 @@
 import sys
 import rclpy
 from rclpy.node import Node
-import cv2
+#import cv2
 import numpy as np
 import time
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy

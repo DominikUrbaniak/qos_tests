@@ -5,7 +5,7 @@ from rclpy.node import Node
 import numpy as np
 import time
 import logging
-import cv2
+#import cv2
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy
 from custom_interfaces.msg import PosesStampId
 from custom_interfaces.srv import QosSettings

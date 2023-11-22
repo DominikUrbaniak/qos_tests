@@ -9,11 +9,11 @@ import rclpy # Python Client Library for ROS 2
 from rclpy.node import Node # Handles the creation of nodes
 from sensor_msgs.msg import Image # Image is the message type
 #from std_msgs.msg import Empty # Image is the message type
-from cv_bridge import CvBridge # Package to convert between ROS and OpenCV Images
+#from cv_bridge import CvBridge # Package to convert between ROS and OpenCV Images
 #import cv2 # OpenCV library
 import numpy as np
 import time
-import cv2
+#import cv2
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy
 from custom_interfaces.msg import PosesStampId
 from custom_interfaces.srv import QosSettings
