@@ -18,6 +18,7 @@ from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy
 from custom_interfaces.msg import PosesStampId
 from custom_interfaces.srv import QosSettings
 from qos_pkg import qos_profiles
+from pympler.asizeof import asizeof
 #from push_control_py.qos_profiles import qos_profile_R1, qos_profile_R10, qos_profile_B1, qos_profile_B10
 
 qos_profiles_dict = {'Sensor':rclpy.qos.qos_profile_sensor_data,'RV1':qos_profiles.qos_profile_RV1,'RV10':qos_profiles.qos_profile_RV10,'RV100':qos_profiles.qos_profile_RV100,
@@ -42,8 +43,10 @@ class QoSPublisher1(Node):
     self.file_note = "default"
     self.fps = 100
     self.packet_size = 1000
+    self.msg_size = 0
     unit_size = 4.3
     min_size = 260
+    self.mode = 0
 
     if len(sys.argv)>1:
         self.qos_profile = sys.argv[1]
@@ -53,8 +56,13 @@ class QoSPublisher1(Node):
                 self.fps = int(sys.argv[3])
                 if len(sys.argv)>4:
                     self.packet_size = int(sys.argv[4])
+                    if len(sys.argv)>5:
+                        self.mode = int(sys.argv[5])
+
     if self.packet_size<min_size:
         self.get_logger().warn(f'Min packet size is ~260 Bytes')
+        self.num_poses = 1
+    elif self.mode == 2:
         self.num_poses = 1
     else:
         self.num_poses = int(np.round((self.packet_size-min_size)/unit_size))
@@ -74,6 +82,8 @@ class QoSPublisher1(Node):
       response.sensing_rate = self.fps
       response.packet_size = self.packet_size
       response.file_note = self.file_note
+      response.mode = self.mode
+      response.msg_size = self.msg_size
       return response
 
   def timer_callback(self):
@@ -93,6 +103,7 @@ class QoSPublisher1(Node):
     msg.poses = np.zeros(self.num_poses, dtype=np.int32).tolist()
     msg.id = self.counter
     msg.stamp_ns = start_time#self.get_clock().now()#time.time()
+    self.msg_size = asizeof(msg)
     self.publisher_.publish(msg)
     self.counter = self.counter + 1
       #end_time = time.time()

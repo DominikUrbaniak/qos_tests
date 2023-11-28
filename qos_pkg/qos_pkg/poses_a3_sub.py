@@ -62,12 +62,14 @@ class QoSPosesSub(Node):
             self.sensing_rate = self.future.result().sensing_rate
             self.packet_size = self.future.result().packet_size
             self.file_note = self.future.result().file_note
+            self.msg_size_ul = self.future.result().msg_size
         else:
-            if len(sys.argv)>6:
+            if len(sys.argv)>7:
                 self.qos_profile = sys.argv[3]
                 self.file_note = sys.argv[4]
                 self.sensing_rate = int(sys.argv[5])
                 self.packet_size = int(sys.argv[6])
+                self.msg_size_ul = int(sys.argv[7])
             else:
                 self.get_logger().info('service not reachable, set the params in the command line')
                 return
@@ -114,7 +116,7 @@ class QoSPosesSub(Node):
         if (end_time_ns - self.start_time.nanoseconds) > self.communication_duration * self.timeout_factor * 1000*1000*1000:
             if self.logging_active:
                 with open(self.output_log_filename, 'w') as log_file:
-                    log_file.write('ID;Stamp published;Stamp server;Stamp received;E2E latency [ms];Message size\n')
+                    log_file.write('ID;Stamp published;Stamp server;Stamp received;E2E latency [ms];Message size UL;Message size DL\n')
                     for message in log_messages:
                         log_file.write(message + '\n')
             self.get_logger().info(f'Interrupted by timeout!')
@@ -123,7 +125,7 @@ class QoSPosesSub(Node):
         if self.n_intermediate_save:
             if self.counter > 0 and self.counter%self.save_ids == 0:
                 with open(f'{self.directory_path}/intermediate_{str(int(time.time()))}.csv', 'w') as log_file:
-                    log_file.write('ID; Stamp published; Stamp server; Stamp received; E2E latency [ms]; Message size\n')
+                    log_file.write('ID;Stamp published;Stamp server;Stamp received;E2E latency [ms];Message size UL;Message size DL\n')
                     for message in log_messages:
                         log_file.write(message + '\n')
                 self.get_logger().info(f'Intermediate saving...')
@@ -133,14 +135,14 @@ class QoSPosesSub(Node):
                 self.get_logger().info(f'Running communication step {self.counter}/{self.n_data_points}')
             if self.logging_active:
                 log_message = (
-                    f"{msg.id};{msg.stamp_ns};{msg.stamp_ns2};{end_time_ns};{(end_time_ns-msg.stamp_ns)/1000/1000};{msg_size}"
+                    f"{msg.id};{msg.stamp_ns};{msg.stamp_ns2};{end_time_ns};{(end_time_ns-msg.stamp_ns)/1000/1000};{self.msg_size_ul};{msg_size}"
                 )
                 log_messages.append(log_message)
 
         else:
             if self.logging_active:
                 with open(self.output_log_filename, 'w') as log_file:
-                    log_file.write('ID; Stamp published; Stamp server; Stamp received; E2E latency [ms]; Message size\n')
+                    log_file.write('ID;Stamp published;Stamp server;Stamp received;E2E latency [ms];Message size UL;Message size DL\n')
                     for message in log_messages:
                         log_file.write(message + '\n')
             self.get_logger().info(f'Successful measurement!')

@@ -20,6 +20,9 @@ class QoSPosesSubPub(Node):
     def __init__(self):
         super().__init__('qos_poses_sub_pub')
 
+        unit_size = 4.3
+        min_size = 260
+
         self.cli_settings = self.create_client(QosSettings, 'get_qos_settings')
         while not self.cli_settings.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('service not available, waiting again...')
@@ -28,6 +31,17 @@ class QoSPosesSubPub(Node):
         rclpy.spin_until_future_complete(self, self.future)
 
         self.qos_profile = self.future.result().qos_profile
+        self.mode = self.future.result().mode
+        self.num_poses = self.future.result().mode
+        self.packet_size = self.future.result().packet_size
+        if self.packet_size<min_size:
+            self.get_logger().warn(f'Min packet size is ~260 Bytes')
+            self.num_poses = 1
+        elif self.mode == 1:
+            self.num_poses = 1
+        else:
+            self.num_poses = int(np.round((self.packet_size-min_size)/unit_size))
+
         #self.file_note = ""
 
         #if len(sys.argv)>1:
@@ -48,7 +62,8 @@ class QoSPosesSubPub(Node):
         start_time = self.get_clock().now().nanoseconds
 
         msg2 = PosesStampId()
-        msg2.poses = msg.poses
+
+        msg2.poses = np.zeros(self.num_poses, dtype=np.int32).tolist()
         msg2.id = msg.id
         msg2.stamp_ns2 = self.get_clock().now().nanoseconds
         msg2.stamp_ns = msg.stamp_ns
