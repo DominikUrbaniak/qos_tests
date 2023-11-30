@@ -44,7 +44,7 @@ class QoSPublisher1(Node):
     self.fps = 100
     self.packet_size = 1000
     self.msg_size = 0
-    unit_size = 4.3
+    unit_size = 4.0
     min_size = 260
     self.mode = 0
 

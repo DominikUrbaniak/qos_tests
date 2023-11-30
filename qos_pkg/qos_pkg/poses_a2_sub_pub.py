@@ -20,7 +20,7 @@ class QoSPosesSubPub(Node):
     def __init__(self):
         super().__init__('qos_poses_sub_pub')
 
-        unit_size = 4.3
+        unit_size = 4.0
         min_size = 260
 
         self.cli_settings = self.create_client(QosSettings, 'get_qos_settings')
@@ -39,6 +39,8 @@ class QoSPosesSubPub(Node):
             self.num_poses = 1
         elif self.mode == 1:
             self.num_poses = 1
+        elif self.mode == 3:
+            self.num_poses = 127
         else:
             self.num_poses = int(np.round((self.packet_size-min_size)/unit_size))
 
