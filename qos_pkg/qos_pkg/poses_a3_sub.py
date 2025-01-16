@@ -57,6 +57,7 @@ class QoSPosesSub(Node):
         if cli_call:
 
             self.req = QosSettings.Request()
+            self.get_logger().info('Calling client...')
             self.future = self.cli_settings.call_async(self.req)
             rclpy.spin_until_future_complete(self, self.future)
 
