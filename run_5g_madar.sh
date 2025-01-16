@@ -1,4 +1,4 @@
-export FASTRTPS_DEFAULT_PROFILES_FILE=/home/dominik.urbaniak/5g_config/network_5g.xml
+export FASTRTPS_DEFAULT_PROFILES_FILE=/workspace/src/qos_tests/network_5g.xml
 export ROS_DOMAIN_ID=20
 fastdds discovery -i 0 -l 127.0.0.1 -p 11811 &
 fastdds discovery -i 1 -l 10.5.39.10 -p 11812 &
