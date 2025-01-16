@@ -59,14 +59,24 @@ class QoSPosesSub(Node):
             self.req = QosSettings.Request()
             self.get_logger().info('Calling client...')
             self.future = self.cli_settings.call_async(self.req)
-            rclpy.spin_until_future_complete(self, self.future)
-
-            self.qos_profile = self.future.result().qos_profile
-            self.sensing_rate = self.future.result().sensing_rate
-            self.packet_size = self.future.result().packet_size
-            self.file_note = self.future.result().file_note
-            self.msg_size_ul = self.future.result().msg_size
-            self.get_logger().info('Client call was fine')
+            rclpy.spin_until_future_complete(self, self.future, timeout_sec=1.0)
+            if self.future.done():
+                self.qos_profile = self.future.result().qos_profile
+                self.sensing_rate = self.future.result().sensing_rate
+                self.packet_size = self.future.result().packet_size
+                self.file_note = self.future.result().file_note
+                self.msg_size_ul = self.future.result().msg_size
+                self.get_logger().info('Client call was fine')
+            else:
+                if len(sys.argv)>7:
+                    self.qos_profile = sys.argv[3]
+                    self.file_note = sys.argv[4]
+                    self.sensing_rate = int(sys.argv[5])
+                    self.packet_size = int(sys.argv[6])
+                    self.msg_size_ul = int(sys.argv[7])
+                else:
+                    self.get_logger().info('service not reachable, set the params in the command line')
+                    return
         else:
             if len(sys.argv)>7:
                 self.qos_profile = sys.argv[3]
