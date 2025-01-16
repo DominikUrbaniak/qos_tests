@@ -41,9 +41,11 @@ class QoSPosesSub(Node):
             self.communication_duration = int(sys.argv[1])
             if len(sys.argv)>2:
                 self.n_intermediate_save = int(sys.argv[2])
+        self.get_logger().info('creating qos settings client...')
         self.cli_settings = self.create_client(QosSettings, 'get_qos_settings')
         cc = 0
         cli_call = 1
+        self.get_logger().info('checking if qos settings service is available...')
         while not self.cli_settings.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('service not available, waiting again...')
             cc += 1
@@ -63,6 +65,7 @@ class QoSPosesSub(Node):
             self.packet_size = self.future.result().packet_size
             self.file_note = self.future.result().file_note
             self.msg_size_ul = self.future.result().msg_size
+            self.get_logger().info('Client call was fine')
         else:
             if len(sys.argv)>7:
                 self.qos_profile = sys.argv[3]
@@ -73,7 +76,7 @@ class QoSPosesSub(Node):
             else:
                 self.get_logger().info('service not reachable, set the params in the command line')
                 return
-
+        
         # Specify the directory path you want to create
         self.directory_path = output_dir+self.file_note
 
