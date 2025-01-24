@@ -6,17 +6,14 @@
                 <initialPeersList>
                     <locator>
                         <udpv4>
-                            <address>10.5.39.10</address>
-                        </udpv4>
-                        <udpv4>
                             <address>10.5.24.65</address>
                         </udpv4>
                         <udpv4>
                             <address>10.5.39.20</address>
                         </udpv4>
-                    		<udpv4>
-                    		    <address>127.0.0.1</address>
-                    		</udpv4>
+                    	<udpv4>
+                    		<address>127.0.0.1</address>
+                    	</udpv4>
                     </locator>
                 </initialPeersList>
             </builtin>
